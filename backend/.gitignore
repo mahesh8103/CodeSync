@@ -1,0 +1,38 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+
+# logs
+*.log
+logs/
+
+# nodemon
+nodemon.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# MongoDB local data
+data/
+db/
+
+# Redis dump
+dump.rdb
+
+# coverage
+coverage/
+
+# build files
+dist/
+build/
+
+# temporary files
+tmp/
+temp/
+
+# IDE
+.vscode/
+.idea/
