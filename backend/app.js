@@ -19,13 +19,12 @@ app.use(cookieParser())
 
 
 //router import 
-
-
+import userRoutes from "../backend/src/routes/user.routes.js"
 
 
 //routes declaration
 
-
+app.use("/users", userRoutes)
 
 
 
