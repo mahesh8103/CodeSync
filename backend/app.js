@@ -20,11 +20,12 @@ app.use(cookieParser())
 
 //router import 
 import userRoutes from "../backend/src/routes/user.routes.js"
-
+import roomRoutes from "../backend/src/routes/room.routes.js"
 
 //routes declaration
 
 app.use("/users", userRoutes)
+app.use("/rooms", roomRoutes)
 
 
 
