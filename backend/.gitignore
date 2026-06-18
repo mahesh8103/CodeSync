@@ -1,6 +1,11 @@
-# dependencies
-node_modules/
+# .gitignore
 
+node_modules/
+.env
+.env.local
+dist/
+build/
+*.log
 # environment variables
 .env
 
