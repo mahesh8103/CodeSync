@@ -22,12 +22,14 @@ app.use(cookieParser())
 import userRoutes from "../backend/src/routes/user.routes.js"
 import roomRoutes from "../backend/src/routes/room.routes.js"
 import codeRoutes from "./src/routes/code.routes.js";
+import snippetRoutes from "./src/routes/snippet.routes.js";
 
 //routes declaration
 
 app.use("/users", userRoutes)
 app.use("/rooms", roomRoutes)
 app.use("/code", codeRoutes)
+app.use("/snippets", snippetRoutes)
 
 
 export {app}
