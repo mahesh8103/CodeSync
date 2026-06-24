@@ -35,15 +35,21 @@ import roomRoutes from "../backend/src/routes/room.routes.js"
 import codeRoutes from "./src/routes/code.routes.js";
 import snippetRoutes from "./src/routes/snippet.routes.js";
 import { initializeSocket } from "./src/socket/socketHandler.js";
-initializeSocket(io);
+import { socketAuthMiddleware } from "./src/socket/socketAuth.middleware.js";
+import healthRoutes from "./src/routes/health.routes.js"; 
 
+
+
+
+io.use(socketAuthMiddleware);
+initializeSocket(io);
 //routes declaration
 
 app.use("/users", userRoutes)
 app.use("/rooms", roomRoutes)
 app.use("/code", codeRoutes)
 app.use("/snippets", snippetRoutes)
-
+app.use("/health", healthRoutes)
 
 export {app, server}
 

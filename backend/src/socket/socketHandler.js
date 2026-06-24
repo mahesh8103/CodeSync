@@ -1,10 +1,31 @@
 import { Room } from "../models/room.model.js";
 import { User } from "../models/user.model.js";
 
+const saveTimers = new Map();
+const debouncedSaveCode = (roomId, code) => {
+    if (saveTimers.has(roomId)) {
+        clearTimeout(saveTimers.get(roomId));
+    }
+    const timer = setTimeout(async () => {
+        try {
+            await Room.findOneAndUpdate(
+                { roomId },
+                { code }
+            );
+            console.log(` Code saved to DB for room: ${roomId}`);
+            saveTimers.delete(roomId);
+        } catch (error) {
+            console.error(`Failed to save code for room ${roomId}:`, error);
+        }
+    }, 2000); // 2 seconds delay
+
+    saveTimers.set(roomId, timer);
+};
+
 const initializeSocket = (io) => {
     io.on("connection", (socket) => {
 
-        console.log(` User connected: ${socket.id}`);
+        console.log(` Authenticated  user connected: ${socket.id}`);
         socket.on("join-room", async (data) => {
             try {
                 const { roomId, userId, userName } = data;
@@ -21,6 +42,21 @@ const initializeSocket = (io) => {
                 if (!room) {
                     socket.emit("error", {
                         message: "Room not found"
+                    });
+                    return;
+                }
+                 const isParticipant = room.participants.some(
+                    (p) => p.toString() === socket.userId
+                );
+                if (!isParticipant) {
+                    socket.emit("error", {
+                        message: "Please join room via API first"
+                    });
+                    return;
+                }
+                if (room.isLocked && !isParticipant) {
+                    socket.emit("error", {
+                        message: "Room is locked"
                     });
                     return;
                 }
@@ -54,11 +90,18 @@ const initializeSocket = (io) => {
                 if (!roomId) {
                     return;
                 }
+                 if (socket.roomId !== roomId) {
+                    socket.emit("error", {
+                        message: "You are not in this room"
+                    });
+                    return;
+                }
                 socket.to(roomId).emit("code-updated", {
                     code,
                     updatedBy: socket.userId,
                     userName: socket.userName
                 });
+                debouncedSaveCode(roomId, code);
             } catch (error) {
                 console.error("Code change error:", error);
             }

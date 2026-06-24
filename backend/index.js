@@ -14,7 +14,9 @@ dotenv.config({
 connectDB()
 .then(() => {
     server.listen(port, () => {
-        console.log(`⚙️ Server is running at port : ${port}`);
+        console.log(` Server is running at port : ${port}`);
+        console.log(` Socket.IO ready for connections`);
+        console.log(` Health check: http://localhost:${port}/api/health`);
         
     })
 })
