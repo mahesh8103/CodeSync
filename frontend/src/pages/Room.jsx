@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { Lock } from "lucide-react";
 
 import { roomAPI } from "../api/roomAPI.js";
 import { codeAPI } from "../api/codeAPI.js";
 import useSocket from "../hooks/useSocket.js";
+import { Lock, Save } from "lucide-react";
+import CreateSnippetModal from "../components/snippets/CreateSnippetModal.jsx";
 
 import RoomHeader from "../components/room/RoomHeader.jsx";
 import ParticipantList from "../components/room/ParticipantList.jsx";
@@ -21,6 +22,7 @@ import Loader from "../components/common/Loader.jsx";
 
 const PasswordModal = ({ roomName, onSubmit, onCancel, loading }) => {
     const [password, setPassword] = useState("");
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -98,6 +100,8 @@ const Room = () => {
     const [running, setRunning] = useState(false);
 
     const [messages, setMessages] = useState([]);
+
+    const [showSnippetModal, setShowSnippetModal] = useState(false);
 
     const setRoomData = useCallback((roomData) => {
         setRoom(roomData);
@@ -382,13 +386,22 @@ const Room = () => {
 
                 <main className="flex-1 flex flex-col overflow-hidden">
                     <div className="flex justify-between items-center px-4 py-2 bg-dark-card border-b border-dark-border">
-                        <LanguageSelect
-                            language={language}
-                            onChange={handleLanguageChange}
-                            disabled={running}
-                        />
-                        <RunButton onClick={handleRunCode} loading={running} />
-                    </div>
+    <LanguageSelect
+        language={language}
+        onChange={handleLanguageChange}
+        disabled={running}
+    />
+    <div className="flex items-center gap-2">
+        <button
+            onClick={() => setShowSnippetModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-dark-bg border border-dark-border hover:border-primary text-gray-300 hover:text-white rounded-lg font-medium transition"
+        >
+            <Save className="w-4 h-4" />
+            <span className="hidden sm:block">Save Snippet</span>
+        </button>
+        <RunButton onClick={handleRunCode} loading={running} />
+    </div>
+</div>
 
                     <div className="flex-1 overflow-hidden">
                         <CodeEditor
@@ -410,6 +423,14 @@ const Room = () => {
                         currentUserId={user?._id}
                     />
                 </aside>
+                {showSnippetModal && (
+    <CreateSnippetModal
+        onClose={() => setShowSnippetModal(false)}
+        onCreated={() => toast.success("Snippet saved! View in Snippets page")}
+        initialCode={code}
+        initialLanguage={language}
+    />
+)}
             </div>
         </div>
     );

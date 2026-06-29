@@ -157,23 +157,38 @@ const CreateRoomModal = ({ onClose, onRoomCreated }) => {
                     </div>
 
                     {/* Private Toggle */}
-                    <div className="flex items-center gap-3">
-                        <button
-                            type="button"
-                            onClick={() => setIsPrivate(!isPrivate)}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${
-                                isPrivate ? "bg-primary" : "bg-dark-border"
-                            }`}
-                        >
-                            <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                                isPrivate ? "translate-x-6" : "translate-x-1"
-                            }`} />
-                        </button>
-                        <div className="flex items-center gap-2">
-                            <Lock className="w-4 h-4 text-gray-400" />
-                            <span className="text-gray-300 text-sm">Private Room</span>
-                        </div>
-                    </div>
+                   <div className="p-4 bg-dark-bg rounded-lg border border-dark-border">
+    <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+            {isPrivate ? (
+                <Lock className="w-5 h-5 text-yellow-400" />
+            ) : (
+                <Globe className="w-5 h-5 text-green-400" />
+            )}
+            <span className="text-white font-semibold">
+                {isPrivate ? "Private Room" : "Public Room"}
+            </span>
+        </div>
+
+        <button
+            type="button"
+            onClick={() => setIsPrivate(!isPrivate)}
+            className={`w-14 h-7 rounded-full transition-colors relative ${
+                isPrivate ? "bg-yellow-500" : "bg-green-500"
+            }`}
+        >
+            <span className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full transition-transform shadow-md ${
+                isPrivate ? "translate-x-7" : "translate-x-0"
+            }`} />
+        </button>
+    </div>
+
+    <p className={`text-xs ${isPrivate ? "text-yellow-400" : "text-green-400"}`}>
+        {isPrivate
+            ? "🔒 Only users with password can join this room"
+            : "✓ Anyone with room ID can join this room"}
+    </p>
+</div>
 
                     {/* Password (if private) */}
                     {isPrivate && (

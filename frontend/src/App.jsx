@@ -9,6 +9,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Room from "./pages/Room.jsx";
+import Snippets from "./pages/Snippets.jsx";
 
 // Components
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
@@ -55,7 +56,7 @@ function App() {
                 path="/snippets" 
                 element={
                     <ProtectedRoute>
-                        <PlaceholderPage title="Snippets" />
+                        <Snippets />
                     </ProtectedRoute>
                 } 
             />
