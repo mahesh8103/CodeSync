@@ -7,6 +7,7 @@ import VerifyOTP from "./pages/VerifyOTP.jsx";
 import Login from "./pages/Login.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
 // Components
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
@@ -37,7 +38,7 @@ function App() {
                 path="/dashboard" 
                 element={
                     <ProtectedRoute>
-                        <PlaceholderPage title="Dashboard" />
+                        <Dashboard />
                     </ProtectedRoute>
                 } 
             />
