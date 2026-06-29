@@ -12,7 +12,7 @@ const app = express()
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: process.env.CORS_ORIGIN,
+        origin: "http://localhost:5173",
         methods: ["GET", "POST"],
         credentials: true
     }
@@ -20,7 +20,7 @@ const io = new Server(server, {
 
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "http://localhost:5173",
     credentials: true
 }))
 app.use(express.json({limit: "16000kb"}))
@@ -45,11 +45,11 @@ io.use(socketAuthMiddleware);
 initializeSocket(io);
 //routes declaration
 
-app.use("/users", userRoutes)
-app.use("/rooms", roomRoutes)
-app.use("/code", codeRoutes)
-app.use("/snippets", snippetRoutes)
-app.use("/health", healthRoutes)
+app.use("/api/auth", userRoutes)
+app.use("/api/rooms", roomRoutes)
+app.use("/api/code", codeRoutes)
+app.use("/api/snippets", snippetRoutes)
+app.use("/api/health", healthRoutes)
 
 export {app, server}
 
