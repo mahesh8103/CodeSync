@@ -59,5 +59,14 @@ export const authAPI = {
     changePassword: async (data) => {
         const response = await axiosInstance.post("/auth/change-password", data);
         return response.data;
+    },
+    //update avatar
+     updateAvatar: async (formData) => {
+        const response = await axiosInstance.patch("/users/update-avatar", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        return response.data;
     }
 };
