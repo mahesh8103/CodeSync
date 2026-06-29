@@ -138,6 +138,34 @@ const initializeSocket = (io) => {
                 timestamp: new Date()
             });
         });
+        socket.on("delete-room", async (data) => {
+    try {
+        const { roomId } = data;
+        if (!roomId) return;
+
+        const room = await Room.findOne({ roomId });
+        if (!room) return;
+
+        if (room.createdBy.toString() !== socket.userId) {
+            socket.emit("error", { message: "Only owner can delete room" });
+            return;
+        }
+
+        io.to(roomId).emit("room-deleted", {
+            roomId,
+            message: `Room has been deleted by ${socket.userName}`
+        });
+
+        const socketsInRoom = await io.in(roomId).fetchSockets();
+        socketsInRoom.forEach((s) => {
+            s.leave(roomId);
+        });
+
+        console.log(`Room ${roomId} deleted by owner ${socket.userName}`);
+    } catch (error) {
+        console.error("Delete room error:", error);
+    }
+        });
         socket.on("leave-room", async (data) => {
             try {
                 const { roomId } = data;

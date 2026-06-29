@@ -8,6 +8,7 @@ import Login from "./pages/Login.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import Room from "./pages/Room.jsx";
 
 // Components
 import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
@@ -46,7 +47,7 @@ function App() {
                 path="/room/:roomId" 
                 element={
                     <ProtectedRoute>
-                        <PlaceholderPage title="Room" />
+                        <Room />
                     </ProtectedRoute>
                 } 
             />

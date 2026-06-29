@@ -73,7 +73,6 @@ const getMyRooms = asyncHandler(async (req, res) => {
 });
 
 const getRoomByRoomId = asyncHandler(async (req, res) => {
-
     const { roomId } = req.params;
 
     const room = await Room.findOne({ roomId, isActive: true })
@@ -84,7 +83,21 @@ const getRoomByRoomId = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Room not found or expired");
     }
 
-    if (room.isPrivate && !room.isParticipant(req.user._id)) {
+    const userId = req.user._id.toString();
+    const isOwner = room.createdBy._id.toString() === userId;
+    const isParticipant = room.participants.some(
+        (p) => p._id.toString() === userId
+    );
+
+    if (isOwner || isParticipant) {
+        const roomData = room.toObject();
+        delete roomData.password;
+        return res.status(200).json(
+            new ApiResponse(200, roomData, "Room fetched successfully")
+        );
+    }
+
+    if (room.isPrivate) {
         return res.status(200).json(
             new ApiResponse(
                 200,
@@ -102,14 +115,12 @@ const getRoomByRoomId = asyncHandler(async (req, res) => {
 
     const roomData = room.toObject();
     delete roomData.password;
-
     return res.status(200).json(
         new ApiResponse(200, roomData, "Room fetched successfully")
     );
 });
 
 const joinRoom = asyncHandler(async (req, res) => {
-
     const { roomId } = req.params;
     const { password } = req.body;
 
@@ -139,7 +150,18 @@ const joinRoom = asyncHandler(async (req, res) => {
 
     if (room.isPrivate) {
         if (!password) {
-            throw new ApiError(400, "Password is required for this room");
+            return res.status(200).json(
+                new ApiResponse(
+                    200,
+                    {
+                        requiresPassword: true,
+                        roomId: room.roomId,
+                        name: room.name,
+                        isPrivate: true
+                    },
+                    "Password required for this private room"
+                )
+            );
         }
         if (password !== room.password) {
             throw new ApiError(401, "Incorrect room password");
