@@ -348,13 +348,13 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
 
 })
 
-const getCurrentUser = asyncHandler(async(req,res)=>{
-       return res
-       .status(200)
-       .json(
-            201,req.user,"current user fetch successfully"
-       )
-})
+const getCurrentUser = asyncHandler(async (req, res) => {
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, req.user, "Current user fetched successfully")
+        );
+});
 
 const updateProfile  = asyncHandler(async(req,res)=>{
       const {fullName ,email} = req.body
@@ -375,31 +375,33 @@ const updateProfile  = asyncHandler(async(req,res)=>{
 })
 
 
-const updateUserAvatar = asyncHandler(async(req,res)=>{
-     const avatarLocalPath = req.files?.avatar?.[0]?.path;
+const updateUserAvatar = asyncHandler(async (req, res) => {
+    const avatarLocalPath = req.file?.path;
 
-      if (!avatarLocalPath) {
-            throw new ApiError(400,"plz upload avatar file")
-      }
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Please upload avatar file");
+    }
 
-      const avatar = await uploadOnCloudinary(avatarLocalPath)
-      if (!avatar.url) {
-            throw new ApiError(400,"errpr while uploading avatar on cloudinary")
-      }
-      const user = await User.findByIdAndUpdate(
-            req.user?._id,
-            { 
-                  $set:{
-                        avatar:avatar.url
-                  }
-            },
-            {new:true}
-      ).select("-password -refreshToken ")
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
 
-      return res
-      .status(200)
-      .json(new ApiResponse(200,user,"avatar changed successfully"))
-})
+    if (!avatar?.url) {
+        throw new ApiError(400, "Error while uploading avatar on cloudinary");
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                avatar: avatar.url
+            }
+        },
+        { new: true }
+    ).select("-password -refreshToken");
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user, "Avatar changed successfully"));
+});
 
 
 export {registerUser,
